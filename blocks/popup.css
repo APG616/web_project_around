@@ -20,8 +20,8 @@
   background-color: transparent;
   border: none;
   position: absolute;
-  top: -30px;
-  right: -30px;
+  top: -50px;
+  right: -50px;
 }
 .popup__close:hover {
   opacity: 60%;
@@ -41,6 +41,20 @@
   z-index: 100;
 }
 
+.register__title {
+  color: #000000;
+  font-family: Inter;
+  font-size: 24px;
+  font-weight: 900;
+  margin-bottom: 54px;
+}
+.register__form {
+  display: flex;
+  flex-direction: column;
+  border: none;
+  margin: auto;
+  justify-content: left;
+}
 .popup__input {
   border: none;
   border-bottom: 1px solid #c4c4c4;
