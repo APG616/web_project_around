@@ -1,0 +1,122 @@
+.main {
+  max-width: 1280px;
+}
+
+.elements__container {
+  max-width: 880px;
+  margin: 50px 0 67px 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-row-gap: 20px;
+  grid-column-gap: 17px;
+  padding: 0px;
+}
+
+.element__card {
+  background-color: #fff;
+  color: black;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 282px;
+  max-height: 361px;
+  border-radius: 10px;
+}
+
+.element__card-image {
+  width: 100%;
+  height: 282px;
+}
+
+.element__content {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 15px 0 21px;
+  gap: 10px;
+}
+
+.content__text {
+  font-family: "Inter", Arial, sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 29px;
+  text-align: left;
+}
+
+.content__like {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.content__like img {
+  width: 21px;
+  height: 19px;
+  margin: 5px 3px -1px auto;
+}
+
+.content__like:hover {
+  opacity: 50%;
+}
+
+..content__like:active {
+}
+
+@media (min-width: 501px) and (max-width: 768px) {
+  .main {
+    max-width: 768px;
+  }
+  .elements__container {
+    width: 100%;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 15px;
+    margin: 0 auto;
+    justify-items: center;
+    align-items: center;
+  }
+
+  .element__card {
+    max-width: 282px;
+    width: 100%;
+    height: auto;
+  }
+
+  .content__text {
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 29.05px;
+    text-align: left;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .main {
+    max-width: 500px;
+  }
+
+  .elements__container {
+    width: 282px;
+    grid-template-columns: repeat(1, 1fr);
+    margin: 0 auto;
+  }
+
+  .element__card {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+  }
+
+  .content__text {
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 29.05px;
+    text-align: left;
+  }
+}
