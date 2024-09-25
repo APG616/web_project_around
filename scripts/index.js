@@ -21,6 +21,7 @@ function handleClosePopup(evt) {
     errorClass: "popup__error_visible",
   });
 }
+
 profilebuttonClose[0].addEventListener("click", handleClosePopup);
 
 profilePopupAdd.addEventListener("click", function () {
@@ -38,3 +39,12 @@ function handleClosePopupAdd(evt) {
     errorClass: "popup__error_visible",
   });
 }
+
+const formElement = document.querySelector(".popup__form");
+
+formElement.addEventListener("submit", function (evt) {
+  evt.preventDefault();
+  profilename.textContent = nameInput.Value;
+  profilejob.textContent = jobInput.Value;
+  handleClosePopup();
+});

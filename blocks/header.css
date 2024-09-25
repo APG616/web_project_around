@@ -11,7 +11,7 @@
   margin-bottom: 40px;
 }
 
-.header__line{
+.header__line {
   border-color: #545454;
 }
 
@@ -27,7 +27,7 @@
     padding: 20px 27px 0 27px;
   }
 
-  .header__line{
+  .header__line {
     padding: auto;
   }
 }
@@ -44,4 +44,5 @@
     width: 126px;
     height: 24px;
     margin: 0 27px 32px;
+  }
 }

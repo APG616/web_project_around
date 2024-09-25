@@ -60,14 +60,14 @@
   border-bottom: 1px solid #c4c4c4;
   width: 100%;
   margin-bottom: 30px;
-  color: #c4c4c4;
+  color: #000000;
 }
 .form__about-me {
   border: none;
   border-bottom: 1px solid #c4c4c4;
   width: 100%;
   margin-bottom: 48px;
-  color: #c4c4c4;
+  color: #000000;
 }
 .form__send {
   width: 358px;
