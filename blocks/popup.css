@@ -13,9 +13,11 @@
 .popup_open {
   display: flex;
 }
+
 .popup-agregar {
   display: flex;
 }
+
 .popup__close {
   background-color: transparent;
   border: none;
@@ -23,7 +25,34 @@
   top: -50px;
   right: -50px;
 }
+
 .popup__close:hover {
+  opacity: 60%;
+}
+
+.close__feed {
+  background-color: transparent;
+  border: none;
+  position: absolute;
+  top: -50px;
+  right: -50px;
+}
+
+.close__feed:hover {
+  opacity: 60%;
+}
+
+.close__image {
+  position: absolute;
+  background-color: transparent;
+  border: none;
+  position: absolute;
+  top: 41px;
+  right: 383px;
+  z-index: 1001;
+}
+
+.close__image:hover {
   opacity: 60%;
 }
 
@@ -81,6 +110,63 @@
   opacity: 80%;
 }
 
+.feed__title {
+  color: #000000;
+  font-family: Inter;
+  font-size: 24px;
+  font-weight: 900;
+  margin-bottom: 54px;
+}
+
+.feed__form {
+  display: flex;
+  flex-direction: column;
+  border: none;
+  margin: auto;
+  justify-content: left;
+}
+
+.form__img-feed {
+  border: none;
+  border-bottom: 1px solid #c4c4c4;
+  width: 100%;
+  margin-bottom: 48px;
+  color: #000000;
+}
+
+.form__update {
+  width: 358px;
+  height: 50px;
+  background-color: black;
+  color: white;
+  border: 1px solid #c4c4c4;
+}
+
+.form__update:hover {
+  opacity: 80%;
+}
+
+.popup__image {
+  max-width: 816px;
+  max-height: 552px;
+  margin: auto;
+}
+
+.image__photo {
+  max-width: 816px;
+  max-height: 540px;
+}
+
+.image__caption {
+  max-width: 291px;
+  height: 12px;
+  font-family: Inter;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
+  text-align: left;
+}
+
 @media screen and (max-width: 500px) {
   .popup__form {
     width: 282px;
@@ -97,5 +183,32 @@
   .popup__close {
     bottom: 280px;
     left: 280px;
+    position: absolute;
+    top: -50px;
+    left: 200px;
+  }
+
+  .form__update {
+    width: 238px;
+  }
+
+  .close__feed {
+    bottom: 280px;
+    left: 280px;
+    position: absolute;
+    top: -50px;
+    left: 200px;
+  }
+
+  .image__photo {
+    max-width: 238px;
+    max-height: 299px;
+  }
+  .close__image {
+    bottom: 280px;
+    left: 280px;
+    position: absolute;
+    top: -50px;
+    left: 240px;
   }
 }

@@ -5,7 +5,7 @@ body {
 }
 
 .page {
-  margin: auto;
+  margin: 0 auto; /* Centrar contenido de página */
   font-family: "Inter", Arial, sans-serif;
   font-size: 16px;
   line-height: 20px;

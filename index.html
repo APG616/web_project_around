@@ -59,6 +59,13 @@
       <main class="main">
         <ul class="elements__container">
           <li class="element__card">
+            <button class="element__trash" type="button">
+              <img
+                class="element__trash element__trash-remove"
+                src="./images/trashButton.png"
+                alt="Botón de eliminar"
+              />
+            </button>
             <img
               src="./images/elemento1.jpg"
               alt="Imagen 1"
@@ -72,65 +79,100 @@
             </div>
           </li>
           <li class="element__card">
+            <button class="element__trash" type="button">
+              <img
+                class="element__trash element__trash-remove"
+                src="./images/trashButton.png"
+                alt="Botón de eliminar"
+              />
+            </button>
             <img
               src="./images/elemento2.jpg"
               alt="Imagen 2"
               class="element__card-image"
             />
             <div class="element__content">
-              <p class="content__text">Valle de Yosemite</p>
+              <p class="content__text">Lago Louise</p>
               <button class="content__like" aria-label="Me gusta">
                 <img src="./images/like.jpg" alt="Botón de me gusta" />
               </button>
             </div>
           </li>
           <li class="element__card">
+            <button class="element__trash" type="button">
+              <img
+                class="element__trash element__trash-remove"
+                src="./images/trashButton.png"
+                alt="Botón de eliminar"
+              />
+            </button>
             <img
               src="./images/elemento3.jpg"
               alt="Imagen 3"
               class="element__card-image"
             />
             <div class="element__content">
-              <p class="content__text">Valle de Yosemite</p>
+              <p class="content__text">Montañas Calvas</p>
               <button class="content__like" aria-label="Me gusta">
                 <img src="./images/like.jpg" alt="Botón de me gusta" />
               </button>
             </div>
           </li>
           <li class="element__card">
+            <button class="element__trash" type="button">
+              <img
+                class="element__trash element__trash-remove"
+                src="./images/trashButton.png"
+                alt="Botón de eliminar"
+              />
+            </button>
             <img
               src="./images/elemento4.jpg"
               alt="Imagen 4"
               class="element__card-image"
             />
             <div class="element__content">
-              <p class="content__text">Valle de Yosemite</p>
+              <p class="content__text">Latemar</p>
               <button class="content__like" aria-label="Me gusta">
                 <img src="./images/like.jpg" alt="Botón de me gusta" />
               </button>
             </div>
           </li>
           <li class="element__card">
+            <button class="element__trash" type="button">
+              <img
+                class="element__trash element__trash-remove"
+                src="./images/trashButton.png"
+                alt="Botón de eliminar"
+              />
+            </button>
             <img
               src="./images/elemento5.jpg"
               alt="Imagen 5"
               class="element__card-image"
             />
             <div class="element__content">
-              <p class="content__text">Valle de Yosemite</p>
+              <p class="content__text">Parque Nacional de la Vanoise</p>
               <button class="content__like" aria-label="Me gusta">
                 <img src="./images/like.jpg" alt="Botón de me gusta" />
               </button>
             </div>
           </li>
           <li class="element__card">
+            <button class="element__trash" type="button">
+              <img
+                class="element__trash element__trash-remove"
+                src="./images/trashButton.png"
+                alt="Botón de eliminar"
+              />
+            </button>
             <img
               src="./images/elemento6.jpg"
               alt="Imagen 6"
               class="element__card-image"
             />
             <div class="element__content">
-              <p class="content__text">Valle de Yosemite</p>
+              <p class="content__text">Lago di Braies</p>
               <button class="content__like" aria-label="Me gusta">
                 <img src="./images/like.jpg" alt="Botón de me gusta" />
               </button>
@@ -167,11 +209,46 @@
                 Guardar
               </button>
             </fieldset>
-            <button class="popup__close" type="button" id="edit-submit">
+            <button class="popup__close" type="button" id="close-popup">
               <img src="./images/closeIcon.jpg" alt="boton de cerrar" />
             </button>
-            <script type="module" src="./scripts/index.js"></script>
           </form>
+        </div>
+        <div class="popup" id="form-feed">
+          <form class="popup__form feed" id="feed-profile">
+            <h2 class="feed__title">Nuevo lugar</h2>
+            <fieldset class="feed__form form">
+              <input
+                id="title"
+                type="text"
+                class="popup__input form__title-feed"
+                minlength="2"
+                maxlength="20"
+                placeholder="Título"
+              />
+              <input
+                id="img-url"
+                type="text"
+                class="popup__input form__img-feed"
+                placeholder="Enlace a la imagen"
+              />
+              <button type="submit" id="edit-update" class="form__update">
+                Crear
+              </button>
+            </fieldset>
+            <button class="close__feed" type="button">
+              <img src="./images/closeIcon.jpg" alt="boton de cerrar" />
+            </button>
+          </form>
+        </div>
+        <div class="popup" id="image-popup">
+          <div class="popup__image">
+            <img src="" alt="Foto" class="image__photo" id="popup-image" />
+            <p class="image__caption" id="popup-caption"></p>
+            <button class="close__image" type="button" id="close-image">
+              <img src="./images/closeIcon.jpg" alt="boton de cerrar" />
+            </button>
+          </div>
         </div>
       </main>
       <footer class="footer">
