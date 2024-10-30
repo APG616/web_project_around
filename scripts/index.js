@@ -1,4 +1,4 @@
-// Variables de los popups
+// Constantesde los popups
 const profilePopupButton = document.querySelector(".profile__edit-button"); // Botón para abrir el popup del perfil
 const profilePopupCloseButton = document.querySelector(".popup__close"); // Botón para cerrar el popup del perfil
 const profilePopup = document.querySelector("#form-profile"); // Popup de edición del perfil
@@ -12,17 +12,24 @@ const addButton = document.querySelector(".profile__add-button"); // Botón para
 const feedPopupCloseButton = document.querySelector(".close__feed"); // Botón para cerrar el popup del feed
 const feedPopup = document.querySelector("#form-feed"); // Popup de actualización del feed
 
-// Seleccionamos el formulario y los campos de entrada
+// Constantes del formulario y los campos de entrada
 const feedForm = document.querySelector("#feed-profile");
+const profileForm = document.querySelector("#register-profile");
+
+const aboutMeInput = document.querySelector("#about-me");
 const titleInput = document.querySelector("#title");
 const imgUrlInput = document.querySelector("#img-url");
 const elementsContainer = document.querySelector(".elements__container");
 
-// Variables de popup imagen
+// Constantes de popup imagen
 const imagePopup = document.querySelector("#image-popup");
 const popupImage = document.querySelector("#popup-image");
 const popupCaption = document.querySelector("#popup-caption");
 const closeImagePopupButton = document.querySelector("#close-image");
+
+// Constantes de los botones
+const submitButtonFeed = document.querySelector("#edit-update");
+const submitButtonProfile = document.querySelector("#edit-submit");
 
 // Abrir popup del perfil y rellenar los valores actuales
 profilePopupButton.addEventListener("click", function () {
@@ -77,8 +84,7 @@ feedForm.addEventListener("submit", function (evt) {
   const newCard = document.createElement("li");
   newCard.classList.add("element__card");
 
-  newCard.innerHTML = `
-    <button class="element__trash" type="button">
+  newCard.innerHTML = `<button class="element__trash" type="button">
       <img class="element__trash element__trash-remove" src="./images/trashButton.png" alt="Botón de eliminar" />
     </button>
     <img src="${imageValue}" alt="${titleValue}" class="element__card-image" />
@@ -87,8 +93,7 @@ feedForm.addEventListener("submit", function (evt) {
       <button class="content__like" aria-label="Me gusta">
         <img src="./images/like.jpg" alt="Botón de me gusta" />
       </button>
-    </div>
-  `;
+    </div>`;
 
   // Agregar la nueva tarjeta al contenedor
   elementsContainer.appendChild(newCard);
@@ -159,7 +164,105 @@ closeImagePopupButton.addEventListener("click", function () {
   imagePopup.classList.remove("popup_open");
 });
 
+// Función cerrar popups en sobreposición
+function closePopupOnOverlayClick(event) {
+  const isOverlayClick = event.target.classList.contains("popup");
+  if (isOverlayClick) {
+    event.target.classList.remove("popup_open");
+  }
+}
+
+// Función cerrar con Esc
+function closePopupOnEsc(event) {
+  if (event.key === "Escape") {
+    const openPopups = document.querySelectorAll(".popup.popup_open");
+    openPopups.forEach((popup) => {
+      popup.classList.remove("popup_open");
+    });
+  }
+}
+
+// Agregar events "click" en sobreposición
+const popups = document.querySelectorAll(".popup");
+popups.forEach((popup) => {
+  popup.addEventListener("click", closePopupOnOverlayClick);
+});
+
+//Agregar evento Global de tecla Esc
+document.addEventListener("keydown", closePopupOnEsc);
+
 // Delegar el evento para abrir el popup de imagen
 elementsContainer.addEventListener("click", function (event) {
   openImagePopup(event);
 });
+
+// Función crear mensaje de error
+const displayError = (input, message) => {
+  const errorSpan = input.nextElementSibling;
+  errorSpan.textContent = message;
+  input.classList.add("input-error");
+};
+
+// Función limpiar mensaje de error
+const clearError = (input) => {
+  const errorSpan = input.nextElementSibling;
+  errorSpan.textContent = "";
+  input.classList.remove("input-error");
+};
+
+// Función validar texto y URL
+const validateInput = (input, isUrl = false) => {
+  const value = input.value.trim();
+  const valid = isUrl
+    ? /^(ftp|http|https):\/\/[^ "]+$/.test(value)
+    : value !== "";
+  if (!valid) {
+    const message = isUrl
+      ? "Por favor, introduce una dirección web."
+      : "Por favor, rellena este campo.";
+    displayError(input, message);
+  } else {
+    clearError(input);
+  }
+
+  return valid;
+};
+
+// Habilitar o desabilitar botón de envío
+const toggleButton = (button, validation) => {
+  const allValid = validations.every((validate) => validate());
+  button.disabled = !allValid;
+};
+
+//Configurar formularios y validación
+const setupForm = (form, button, validations) => {
+  form.addEventListener("input", () => toggleButton(button, validations));
+
+  form.addEventListener("submit", (evt) => {
+    evt.preventDefault();
+
+    const isFormValid = validations.every((validate) => validate());
+    if (isFormValid) {
+      console.log("Formulario válido.");
+    }
+  });
+};
+
+// Iniciar validación de formularios
+setupForm(
+  document.querySelector("#feed-profile"),
+  document.querySelector("#edit-update"),
+  [
+    () => validateInput(document.querySelector("#title")),
+    () => validateInput(document.querySelector("#img-url"), true),
+  ]
+);
+
+setupForm(
+  document.querySelector("#register-profile"),
+  document.querySelector("#edit-submit"),
+  [
+    () => validateInput(document.querySelector("#name")),
+    () => validateInput(document.querySelector("#about-me")),
+  ]
+);

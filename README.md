@@ -12,3 +12,7 @@
 2.2. Se agrega el botón de like en imagenes.
 
 2.3. Se agrega funcionalidad al botón de clase .profile\_\_add-button y códificación para poder agregar nuevas imágenes al #feed.
+
+3.1. Se agrega validación a los formularios
+3.2. Se agrega funcionalidad a Esc para cerrar los popups.
+3.3. Se agrega funcionalidad para cerrar los popups haciendo click en la sobreposición.
