@@ -213,23 +213,33 @@ const clearError = (input) => {
 // Función validar texto y URL
 const validateInput = (input, isUrl = false) => {
   const value = input.value.trim();
-  const valid = isUrl
-    ? /^(ftp|http|https):\/\/[^ "]+$/.test(value)
-    : value !== "";
-  if (!valid) {
-    const message = isUrl
-      ? "Por favor, introduce una dirección web."
-      : "Por favor, rellena este campo.";
-    displayError(input, message);
+  let valid = true;
+
+  if (isUrl) {
+    const urlPattern = /^(ftp|http|https) : \/\/[^ "]+$/;
+    valid = urlPattern.test(value);
+    if (!valid) {
+      displayError(input, "Por favor, introduce una url válida");
+    } else {
+      clearError(input);
+    }
   } else {
-    clearError(input);
+    if (value.length < input.minLength || value.length > input.maxLength) {
+      valid = false;
+      displayError(
+        input,
+        `Por favor, introduce ${input.minLength} caracteres o más.`
+      );
+    } else {
+      clearError(input);
+    }
   }
 
   return valid;
 };
 
 // Habilitar o desabilitar botón de envío
-const toggleButton = (button, validation) => {
+const toggleButton = (button, validations) => {
   const allValid = validations.every((validate) => validate());
   button.disabled = !allValid;
 };

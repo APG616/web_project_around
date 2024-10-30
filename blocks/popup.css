@@ -116,7 +116,6 @@
   opacity: 0.5; /* Hace que se vea más apagado */
 }
 
-
 .feed__title {
   color: #000000;
   font-family: Inter;
@@ -159,8 +158,6 @@
   opacity: 0.5; /* Hace que se vea más apagado */
 }
 
-
-
 .popup__image {
   max-width: 816px;
   max-height: 552px;
@@ -182,19 +179,18 @@
   text-align: left;
 }
 
-/* Estilo para los mensajes de error */
+/* Estilizar para los mensajes de error */
 .popup__input_type_error {
   color: red;
-  font-size: 12px;
-  margin-top: 4px;
-  display: block;
+  font-size: 12px; /* Ajuste para dar espacio entre el input y el mensaje */
+  width: 100%; /* Asegura que el mensaje ocupe el mismo ancho que el input */
+  text-align: left; /* Alinea el mensaje a la izquierda */
 }
 
 /* Estilo para el borde del campo en error */
 .input-error {
   border-color: red;
 }
-
 
 @media screen and (max-width: 500px) {
   .popup__form {
