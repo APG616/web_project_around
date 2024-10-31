@@ -216,7 +216,7 @@ const validateInput = (input, isUrl = false) => {
   let valid = true;
 
   if (isUrl) {
-    const urlPattern = /^(ftp|http|https) : \/\/[^ "]+$/;
+    const urlPattern = /^(ftp|http|https):\/\/[^\s/$.?#].[^\s]*$/;
     valid = urlPattern.test(value);
     if (!valid) {
       displayError(input, "Por favor, introduce una url válida");

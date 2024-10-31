@@ -121,13 +121,13 @@
   z-index: 200;
 }
 
-@media (min-width: 501px) and (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1024px) {
   .main {
     max-width: 768px;
   }
   .elements__container {
     width: 100%;
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
     margin: 0 auto;
     justify-items: center;
@@ -149,7 +149,7 @@
   }
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 767px) {
   .main {
     max-width: 500px;
   }
