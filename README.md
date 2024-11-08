@@ -16,3 +16,21 @@
 3.1. Se agrega validación a los formularios
 3.2. Se agrega funcionalidad a Esc para cerrar los popups.
 3.3. Se agrega funcionalidad para cerrar los popups haciendo click en la sobreposición.
+
+4.1. Se modula las funciones en tres scripts
+4.1.1. Card.js que produce una tarjeta con texto y un enlace a la imagen, siguiendo estos requisitos:
+
+- Toma los datos de la tarjeta (tanto el texto como un enlace a la imagen) y un selector de elemento de plantilla como parámetros en el constructor.
+- Dispone de métodos privados para trabajar con el marcado y añadir detectores de eventos.
+- Tiene métodos privados para cada controlador de eventos.
+- Tiene un método público que devuelve un elemento card completamente funcional y lleno de datos.
+
+  4.1.2. FormValidator.js establece la configuración para validar los campos del formulario de acuerdo con los siguientes requisitos:
+
+  - Tu constructor tiene dos parámetros. El primer parámetro es un objeto de configuración que almacena los selectores y las clases del formulario, y el segundo toma un elemento del formulario a validar.
+  - Tiene métodos privados para procesar el formulario, que incluyen: comprobar la validez del campo, cambiar el estado del botón Submit, y agregar todos los controladores necesarios.
+  - Tiene un método público enableValidation(), que activa la validación del formulario.
+
+  4.1.3. Util.js contiene los controladores de eventos y la función que abre/cierra las ventanas modales.
+
+  4.1.4. index.js integra todo el código modular y lo orquesta para funcionalidad completa.
