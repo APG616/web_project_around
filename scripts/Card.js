@@ -1,64 +1,87 @@
-// Card.js
 export default class Card {
-  constructor(data, cardSelector) {
-    this._text = data.text;
-    this._imageLink = data.imageLink;
-    this._cardSelector = cardSelector;
+  constructor(data, templateSelector) {
+    this._name = data.name;
+    this._link = data.link;
+    this._templateSelector = templateSelector;
+    this._element = this._getTemplate();
+    this._imageElement = this._element.querySelector(".element__card-image");
+    this._titleElement = this._element.querySelector(".content__text");
   }
 
-  // Método para obtener el template del card
   _getTemplate() {
-    const cardElement = document
-      .querySelector(this._cardSelector)
+    const cardTemplate = document
+      .querySelector(this._templateSelector)
       .content.querySelector(".element__card")
       .cloneNode(true);
-    return cardElement;
+    return cardTemplate;
   }
 
-  // Método privado para establecer los manejadores de eventos
   _setEventListeners() {
-    this._element
-      .querySelector(".content__like")
-      .addEventListener("click", () => {
-        this._handleLike();
+    this._likeButton = this._element.querySelector(".content__like");
+    if (this._likeButton) {
+      this._likeButton.addEventListener("click", () => {
+        this._toggleLike();
       });
-    this._element
-      .querySelector(".element__trash-remove")
-      .addEventListener("click", () => {
-        this._handleDelete();
+    } else {
+      console.error("No se encontró el botón de 'like' en la tarjeta.");
+    }
+
+    this._trashButton = this._element.querySelector(".element__trash");
+    if (this._trashButton) {
+      this._trashButton.addEventListener("click", () => {
+        this._deleteCard();
       });
-    this._element
-      .querySelector(".element__card-image")
-      .addEventListener("click", () => {
-        this._handleImageClick();
+    } else {
+      console.error("No se encontró el botón de 'trash' en la tarjeta.");
+    }
+
+    if (this._imageElement) {
+      this._imageElement.addEventListener("click", () => {
+        this._handlePreviewPicture();
       });
+    } else {
+      console.error("No se encontró el elemento de imagen en la tarjeta.");
+    }
   }
 
-  // Método privado para manejar el botón de "like"
-  _handleLike() {
-    this._element.querySelector(".content__like").classList.toggle("liked");
+  _toggleLike() {
+    this._likeButton.classList.toggle("liked");
   }
 
-  // Método privado para manejar el botón de "delete"
-  _handleDelete() {
+  _deleteCard() {
     this._element.remove();
     this._element = null;
   }
 
-  // Método privado para manejar el click en la imagen (aquí iría la lógica del popup)
-  _handleImageClick() {
-    // Aquí puedes llamar a una función para abrir el popup de imagen y pasarle la URL y texto
-    console.log(`Abriendo imagen: ${this._imageLink}`);
-  }
-
-  // Método público que crea la tarjeta y retorna el elemento
   generateCard() {
-    this._element = this._getTemplate();
-    this._element.querySelector(".element__card-image").src = this._imageLink;
-    this._element.querySelector(".element__card-image").alt = this._text;
-    this._element.querySelector(".content__text").textContent = this._text;
-
+    this._imageElement.src = this._link;
+    this._imageElement.alt = this._name;
+    this._titleElement.textContent = this._name;
     this._setEventListeners();
     return this._element;
+  }
+
+  _handlePreviewPicture() {
+    const popupImage = document.querySelector("#popup-image");
+    const popupCaption = document.querySelector("#popup-caption");
+    const imagePopup = document.querySelector("#image-popup");
+
+    if (popupImage && popupCaption && imagePopup) {
+      popupImage.src = this._link;
+      popupImage.alt = this._name;
+      popupCaption.textContent = this._name;
+
+      imagePopup.classList.add("popup_open");
+      if (!this._isEscapeListenerAdded) {
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            imagePopup.classList.remove("popup_open");
+          }
+        });
+        this._isEscapeListenerAdded = true;
+      }
+    } else {
+      console.error("No se encontraron los elementos del popup de imagen.");
+    }
   }
 }

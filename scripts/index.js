@@ -27,7 +27,7 @@ const elementsContainer = document.querySelector(".elements__container");
 // Configuración de validación
 const validationConfig = {
   inputSelector: ".popup__input",
-  submitButtonSelector: ".form__send",
+  submitButtonSelector: ".form__send, .form__update",
   inactiveButtonClass: "form__send_disabled",
   inputErrorClass: "popup__input_type_error",
   errorClass: "popup__input-error_active",
