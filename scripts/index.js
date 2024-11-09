@@ -33,6 +33,26 @@ const validationConfig = {
   errorClass: "popup__input-error_active",
 };
 
+// Datos de las tarjetas predeterminadas
+const defaultCardsData = [
+  { name: "Valle de Yosemite", link: "./images/elemento1.jpg" },
+  { name: "Lago Louise", link: "./images/elemento2.jpg" },
+  { name: "Montañas Calvas", link: "./images/elemento3.jpg" },
+  { name: "Latemar", link: "./images/elemento4.jpg" },
+  { name: "Parque Nacional de la Vanoise", link: "./images/elemento5.jpg" },
+  { name: "Lago di Braies", link: "./images/elemento6.jpg" },
+];
+
+// Limpiar las tarjetas existentes antes de agregar nuevas
+elementsContainer.innerHTML = ""; // Esto elimina todas las tarjetas actuales en el contenedor
+
+// Crear las tarjetas predeterminadas y agregarlas al contenedor
+defaultCardsData.forEach((cardData) => {
+  const card = new Card(cardData, "#template-card");
+  const cardElement = card.generateCard();
+  elementsContainer.append(cardElement);
+});
+
 // Instancias de FormValidator
 const profileFormValidator = new FormValidator(validationConfig, profileForm);
 profileFormValidator.enableValidation();
@@ -73,14 +93,20 @@ feedPopupCloseButton.addEventListener("click", () => {
 // Crear y agregar una nueva tarjeta al contenedor de tarjetas
 feedForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
+  if (feedFormValidator._submitButton.disabled) {
+    return;
+  }
 
+  // Crear la nueva tarjeta
   const cardData = {
     name: titleInput.value.trim(),
     link: imgUrlInput.value.trim(),
   };
 
+  // Crear la tarjeta y agregarla al contenedor
   const card = new Card(cardData, "#template-card");
-  elementsContainer.append(card.generateCard());
+  const cardElement = card.generateCard();
+  elementsContainer.append(cardElement);
 
   // Limpiar los campos de entrada y cerrar el popup
   titleInput.value = "";

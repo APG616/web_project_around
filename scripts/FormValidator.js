@@ -6,7 +6,7 @@ export default class FormValidator {
     this._inactiveButtonClass = config.inactiveButtonClass;
     this._inputErrorClass = config.inputErrorClass;
     this._errorClass = config.errorClass;
-    this._formElement = formElement;
+    this._formElement = formElement; // Usa formElement directamente
     this._inputList = Array.from(
       formElement.querySelectorAll(this._inputSelector)
     );
@@ -14,6 +14,7 @@ export default class FormValidator {
   }
 
   enableValidation() {
+    this._toggleButtonState();
     this._setEventListeners();
   }
 
@@ -57,6 +58,9 @@ export default class FormValidator {
     inputElement.classList.remove(this._inputErrorClass);
     errorElement.classList.remove(this._errorClass);
     errorElement.textContent = "";
+
+    // Revisa si el botón de envío debe ser habilitado después de ocultar el error
+    this._toggleButtonState();
   }
 
   _toggleButtonState() {
