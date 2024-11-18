@@ -1,5 +1,5 @@
 export default class Card {
-  constructor(data, templateSelector) {
+  constructor(data, templateSelector, handleCardClick) {
     this._name = data.name;
     this._link = data.link;
     this._templateSelector = templateSelector;
@@ -11,7 +11,7 @@ export default class Card {
     this._titleElement = this._element.querySelector(".content__text");
     this._likeButton = this._element.querySelector(".content__like");
     this._trashButton = this._element.querySelector(".element__trash");
-    this._isEscapeListenerAdded = false;
+    this._handleCardClick = handleCardClick; // Nueva función recibida en el constructor
   }
 
   _getTemplate() {
@@ -36,9 +36,10 @@ export default class Card {
     }
 
     if (this._imageElement) {
-      this._imageElement.addEventListener("click", () =>
-        this._handlePreviewPicture()
-      );
+      // Usamos la función handleCardClick para abrir el popup con la imagen
+      this._imageElement.addEventListener("click", () => {
+        this._handleCardClick(this._name, this._link);
+      });
     } else {
       console.error("No se encontró el elemento de imagen en la tarjeta.");
     }
@@ -63,32 +64,5 @@ export default class Card {
     this._setEventListeners();
 
     return this._element;
-  }
-
-  _handlePreviewPicture() {
-    const popupImage = document.querySelector("#popup-image");
-    const popupCaption = document.querySelector("#popup-caption");
-    const imagePopup = document.querySelector("#image-popup");
-
-    if (popupImage && popupCaption && imagePopup) {
-      popupImage.src = this._link;
-      popupImage.alt = this._name;
-      popupCaption.textContent = this._name;
-
-      imagePopup.classList.add("popup_open");
-
-      // Aseguramos que el evento de cierre con 'Escape' solo se añada una vez
-      if (!this._isEscapeListenerAdded) {
-        this._handleEscape = (event) => {
-          if (event.key === "Escape") {
-            imagePopup.classList.remove("popup_open");
-          }
-        };
-        document.addEventListener("keydown", this._handleEscape);
-        this._isEscapeListenerAdded = true;
-      }
-    } else {
-      console.error("No se encontraron los elementos del popup de imagen.");
-    }
   }
 }

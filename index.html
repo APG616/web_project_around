@@ -56,129 +56,14 @@
           />
         </button>
       </section>
+
       <main class="main">
+        <!-- Contenedor para las tarjetas -->
         <ul class="elements__container">
-          <li class="element__card">
-            <button class="element__trash" type="button">
-              <img
-                class="element__trash element__trash-remove"
-                src="./images/trashButton.png"
-                alt="Botón de eliminar"
-              />
-            </button>
-            <img
-              src="./images/elemento1.jpg"
-              alt="Imagen 1"
-              class="element__card-image"
-            />
-            <div class="element__content">
-              <p class="content__text">Valle de Yosemite</p>
-              <button class="content__like" aria-label="Me gusta">
-                <img src="./images/like.jpg" alt="Botón de me gusta" />
-              </button>
-            </div>
-          </li>
-          <li class="element__card">
-            <button class="element__trash" type="button">
-              <img
-                class="element__trash element__trash-remove"
-                src="./images/trashButton.png"
-                alt="Botón de eliminar"
-              />
-            </button>
-            <img
-              src="./images/elemento2.jpg"
-              alt="Imagen 2"
-              class="element__card-image"
-            />
-            <div class="element__content">
-              <p class="content__text">Lago Louise</p>
-              <button class="content__like" aria-label="Me gusta">
-                <img src="./images/like.jpg" alt="Botón de me gusta" />
-              </button>
-            </div>
-          </li>
-          <li class="element__card">
-            <button class="element__trash" type="button">
-              <img
-                class="element__trash element__trash-remove"
-                src="./images/trashButton.png"
-                alt="Botón de eliminar"
-              />
-            </button>
-            <img
-              src="./images/elemento3.jpg"
-              alt="Imagen 3"
-              class="element__card-image"
-            />
-            <div class="element__content">
-              <p class="content__text">Montañas Calvas</p>
-              <button class="content__like" aria-label="Me gusta">
-                <img src="./images/like.jpg" alt="Botón de me gusta" />
-              </button>
-            </div>
-          </li>
-          <li class="element__card">
-            <button class="element__trash" type="button">
-              <img
-                class="element__trash element__trash-remove"
-                src="./images/trashButton.png"
-                alt="Botón de eliminar"
-              />
-            </button>
-            <img
-              src="./images/elemento4.jpg"
-              alt="Imagen 4"
-              class="element__card-image"
-            />
-            <div class="element__content">
-              <p class="content__text">Latemar</p>
-              <button class="content__like" aria-label="Me gusta">
-                <img src="./images/like.jpg" alt="Botón de me gusta" />
-              </button>
-            </div>
-          </li>
-          <li class="element__card">
-            <button class="element__trash" type="button">
-              <img
-                class="element__trash element__trash-remove"
-                src="./images/trashButton.png"
-                alt="Botón de eliminar"
-              />
-            </button>
-            <img
-              src="./images/elemento5.jpg"
-              alt="Imagen 5"
-              class="element__card-image"
-            />
-            <div class="element__content">
-              <p class="content__text">Parque Nacional de la Vanoise</p>
-              <button class="content__like" aria-label="Me gusta">
-                <img src="./images/like.jpg" alt="Botón de me gusta" />
-              </button>
-            </div>
-          </li>
-          <li class="element__card">
-            <button class="element__trash" type="button">
-              <img
-                class="element__trash element__trash-remove"
-                src="./images/trashButton.png"
-                alt="Botón de eliminar"
-              />
-            </button>
-            <img
-              src="./images/elemento6.jpg"
-              alt="Imagen 6"
-              class="element__card-image"
-            />
-            <div class="element__content">
-              <p class="content__text">Lago di Braies</p>
-              <button class="content__like" aria-label="Me gusta">
-                <img src="./images/like.jpg" alt="Botón de me gusta" />
-              </button>
-            </div>
-          </li>
+          <!-- Aquí se agregarán las tarjetas de imagen por JavaScript -->
         </ul>
+
+        <!-- Popup de edición de perfil -->
         <div class="popup" id="form-profile">
           <form class="popup__form register" id="register-profile">
             <h2 class="register__title">Editar perfil</h2>
@@ -192,6 +77,7 @@
                 required
                 value="Jacques Cousteau"
                 placeholder="Nombre"
+                autocomplete="no"
               />
               <span class="popup__input_type_error name-error"></span>
               <input
@@ -202,7 +88,7 @@
                 maxlength="200"
                 required
                 value="Explorador"
-                placeholder="Acerca de mi"
+                placeholder="Acerca de mí"
               />
               <span class="popup__input_type_error about-me-error"></span>
               <button type="submit" id="edit-submit" class="form__send">
@@ -215,6 +101,7 @@
           </form>
         </div>
 
+        <!-- Popup para agregar una nueva tarjeta -->
         <div class="popup" id="form-feed">
           <form class="popup__form feed" id="feed-profile">
             <h2 class="feed__title">Nuevo lugar</h2>
@@ -241,39 +128,44 @@
                 Crear
               </button>
             </fieldset>
-            <button class="close__feed" type="button">
+            <button class="popup__close" type="button">
               <img src="./images/closeIcon.jpg" alt="boton de cerrar" />
             </button>
           </form>
         </div>
+
+        <!-- Popup para ver la imagen en grande -->
         <div class="popup" id="image-popup">
           <div class="popup__image">
             <img src="" alt="Foto" class="image__photo" id="popup-image" />
             <p class="image__caption" id="popup-caption"></p>
-            <button class="close__image" type="button" id="close-image">
+            <button class="popup__close" type="button" id="close-image">
               <img src="./images/closeIcon.jpg" alt="boton de cerrar" />
             </button>
           </div>
-          <template id="template-card">
-            <li class="element__card">
-              <button class="element__trash" type="button">
-                <img
-                  class="element__trash element__trash-remove"
-                  src="./images/trashButton.png"
-                  alt="Botón de eliminar"
-                />
-              </button>
-              <img src="" alt="img" class="element__card-image" />
-              <div class="element__content">
-                <p class="content__text">Latemar</p>
-                <button class="content__like" aria-label="Me gusta">
-                  <img src="./images/like.jpg" alt="Botón de me gusta" />
-                </button>
-              </div>
-            </li>
-          </template>
         </div>
+
+        <!-- Plantilla para las tarjetas de imagen -->
+        <template id="template-card">
+          <li class="element__card">
+            <button class="element__trash" type="button">
+              <img
+                class="element__trash element__trash-remove"
+                src="./images/trashButton.png"
+                alt="Botón de eliminar"
+              />
+            </button>
+            <img src="" alt="img" class="element__card-image" />
+            <div class="element__content">
+              <p class="content__text">Latemar</p>
+              <button class="content__like" aria-label="Me gusta">
+                <img src="./images/like.jpg" alt="Botón de me gusta" />
+              </button>
+            </div>
+          </li>
+        </template>
       </main>
+
       <footer class="footer">
         <p class="footer__copyright">© 2024 Around The U.S.</p>
       </footer>

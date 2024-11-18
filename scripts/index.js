@@ -2,27 +2,18 @@
 import Card from "./Card.js";
 import FormValidator from "./FormValidator.js";
 import { openPopup, closePopup, closePopupOnOverlayClick } from "./utils.js";
+import Section from "./Section.js";
+import UserInfo from "./UserInfo.js";
+import { PopupWithImage, PopupWithForm } from "./Popup.js";
 
 // Selección de elementos del DOM
 const profilePopupButton = document.querySelector(".profile__edit-button");
-const profilePopupCloseButton = document.querySelector(".popup__close");
-const profilePopup = document.querySelector("#form-profile");
-
+const addButton = document.querySelector(".profile__add-button");
+const profileForm = document.querySelector("#register-profile");
+const feedForm = document.querySelector("#feed-profile");
+const elementsContainer = document.querySelector(".elements__container");
 const nameInput = document.querySelector("#name");
 const jobInput = document.querySelector("#about-me");
-const profileName = document.querySelector("#profile-name");
-const profileDescription = document.querySelector("#profile-description");
-
-const addButton = document.querySelector(".profile__add-button");
-const feedPopupCloseButton = document.querySelector(".close__feed");
-const feedPopup = document.querySelector("#form-feed");
-
-const feedForm = document.querySelector("#feed-profile");
-const profileForm = document.querySelector("#register-profile");
-
-const titleInput = document.querySelector("#title");
-const imgUrlInput = document.querySelector("#img-url");
-const elementsContainer = document.querySelector(".elements__container");
 
 // Configuración de validación
 const validationConfig = {
@@ -32,6 +23,12 @@ const validationConfig = {
   inputErrorClass: "popup__input_type_error",
   errorClass: "popup__input-error_active",
 };
+
+// Instancias de FormValidator
+const profileFormValidator = new FormValidator(validationConfig, profileForm);
+const feedFormValidator = new FormValidator(validationConfig, feedForm);
+profileFormValidator.enableValidation();
+feedFormValidator.enableValidation();
 
 // Datos de las tarjetas predeterminadas
 const defaultCardsData = [
@@ -43,75 +40,67 @@ const defaultCardsData = [
   { name: "Lago di Braies", link: "./images/elemento6.jpg" },
 ];
 
-// Limpiar las tarjetas existentes antes de agregar nuevas
-elementsContainer.innerHTML = ""; // Esto elimina todas las tarjetas actuales en el contenedor
+// Función handleCardClick para abrir el popup de imagen
+function handleCardClick(name, link) {
+  popupWithImage.open({ link, name });
+}
 
-// Crear las tarjetas predeterminadas y agregarlas al contenedor
-defaultCardsData.forEach((cardData) => {
-  const card = new Card(cardData, "#template-card");
-  const cardElement = card.generateCard();
-  elementsContainer.append(cardElement);
+// Instancia de PopupWithImage para el popup de visualización de imágenes
+const popupWithImage = new PopupWithImage("#image-popup");
+popupWithImage.setEventListener();
+
+// Instancia de Section para manejar las tarjetas
+const cardSection = new Section(
+  {
+    items: defaultCardsData,
+    renderer: (cardData) => {
+      const card = new Card(cardData, "#template-card", handleCardClick);
+      const cardElement = card.generateCard();
+      cardSection.addItem(cardElement);
+    },
+  },
+  ".elements__container"
+);
+cardSection.renderItems(); // Renderizamos las tarjetas predeterminadas al cargar la página
+
+// Instancia de UserInfo para gestionar la información del usuario
+const userInfo = new UserInfo({
+  nameSelector: "#profile-name",
+  jobSelector: "#profile-description",
 });
 
-// Instancias de FormValidator
-const profileFormValidator = new FormValidator(validationConfig, profileForm);
-profileFormValidator.enableValidation();
+// Instancia de PopupWithForm para el formulario de perfil
+const popupProfileForm = new PopupWithForm("#form-profile", (formData) => {
+  userInfo.setUserInfo({
+    name: formData.name,
+    job: formData["about-me"],
+  });
+  popupProfileForm.close();
+});
+popupProfileForm.setEventListener();
 
-const feedFormValidator = new FormValidator(validationConfig, feedForm);
-feedFormValidator.enableValidation();
-
-// Función para manejar la apertura del popup de perfil y rellenar los valores actuales
+// Abrir el popup de perfil con datos existentes
 profilePopupButton.addEventListener("click", () => {
-  nameInput.value = profileName.textContent.trim();
-  jobInput.value = profileDescription.textContent.trim();
-  openPopup(profilePopup);
+  console.log("Botón de edición de perfil clickeado"); // Verificar en consola
+  const userData = userInfo.getUserInfo();
+  nameInput.value = userData.name;
+  jobInput.value = userData.job;
+  popupProfileForm.open();
 });
 
-// Cerrar el popup de perfil al hacer clic en el botón de cerrar
-profilePopupCloseButton.addEventListener("click", () => {
-  closePopup(profilePopup);
+// Instancia de PopupWithForm para el formulario de nueva tarjeta
+const popupAddCardForm = new PopupWithForm("#form-feed", (formData) => {
+  const cardData = { name: formData.title, link: formData["img-url"] };
+  const card = new Card(cardData, "#template-card", handleCardClick);
+  const cardElement = card.generateCard();
+  cardSection.addItem(cardElement);
+  popupAddCardForm.close();
 });
-
-// Actualizar la información de perfil con los valores ingresados
-profileForm.addEventListener("submit", (evt) => {
-  evt.preventDefault();
-  profileName.textContent = nameInput.value.trim();
-  profileDescription.textContent = jobInput.value.trim();
-  closePopup(profilePopup);
-});
+popupAddCardForm.setEventListener();
 
 // Abrir el popup de "nuevo lugar"
 addButton.addEventListener("click", () => {
-  openPopup(feedPopup);
-});
-
-// Cerrar el popup de "nuevo lugar" al hacer clic en el botón de cerrar
-feedPopupCloseButton.addEventListener("click", () => {
-  closePopup(feedPopup);
-});
-
-// Crear y agregar una nueva tarjeta al contenedor de tarjetas
-feedForm.addEventListener("submit", (evt) => {
-  evt.preventDefault();
-  if (feedFormValidator._submitButton.disabled) {
-    return;
-  }
-
-  // Crear la nueva tarjeta
-  const cardData = {
-    name: titleInput.value.trim(),
-    link: imgUrlInput.value.trim(),
-  };
-
-  // Crear la tarjeta y agregarla al contenedor
-  const card = new Card(cardData, "#template-card");
-  const cardElement = card.generateCard();
-  elementsContainer.append(cardElement);
-
-  // Limpiar los campos de entrada y cerrar el popup
-  titleInput.value = "";
-  imgUrlInput.value = "";
-  closePopup(feedPopup);
+  popupAddCardForm.open();
 });
 
 // Delegación de eventos para manejo de overlay y tecla Esc
