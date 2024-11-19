@@ -67,22 +67,25 @@ export class PopupWithForm extends Popup {
   _getInputValues() {
     const formValues = {};
     this._inputList.forEach((input) => {
-      formValues[input.name] = input.value;
+      formValues[input.name] = input.value; // Recoge los valores usando 'name'
     });
+    console.log("Datos del formulario:", formValues); // Agregar log para depuración
     return formValues;
   }
 
   setEventListener() {
     super.setEventListener();
     this._form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      console.log("Formulario enviado"); // Confirmar envío del formulario
+      event.preventDefault(); // Impide el comportamiento por defecto
+      console.log("Formulario enviado:", this._getInputValues()); // Agrega este log para verificar
       this._handleFormSubmit(this._getInputValues());
     });
   }
 
   close() {
     super.close();
-    this._form.reset();
+    setTimeout(() => {
+      this._form.reset(); // Ahora el formulario se limpia después de cerrarlo
+    }, 0);
   }
 }

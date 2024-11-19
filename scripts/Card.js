@@ -60,6 +60,12 @@ export default class Card {
     this._imageElement.alt = this._name;
     this._titleElement.textContent = this._name;
 
+    // Manejar errores de carga de imágenes
+    this._imageElement.addEventListener("error", () => {
+      this._imageElement.src = "./images/defaultImage.jpg"; // Ruta a una imagen por defecto
+      this._imageElement.alt = "Imagen no disponible";
+    });
+
     // Agregamos los event listeners
     this._setEventListeners();
 

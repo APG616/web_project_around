@@ -71,30 +71,46 @@ const userInfo = new UserInfo({
 
 // Instancia de PopupWithForm para el formulario de perfil
 const popupProfileForm = new PopupWithForm("#form-profile", (formData) => {
-  userInfo.setUserInfo({
-    name: formData.name,
-    job: formData["about-me"],
-  });
-  popupProfileForm.close();
+  if (formData.name && formData["about-me"]) {
+    userInfo.setUserInfo({
+      name: formData.name,
+      job: formData["about-me"],
+    });
+    popupProfileForm.close();
+  } else {
+    console.error("Los datos del formulario de perfil son inválidos.");
+  }
 });
 popupProfileForm.setEventListener();
 
 // Abrir el popup de perfil con datos existentes
 profilePopupButton.addEventListener("click", () => {
-  console.log("Botón de edición de perfil clickeado"); // Verificar en consola
   const userData = userInfo.getUserInfo();
   nameInput.value = userData.name;
   jobInput.value = userData.job;
+
+  profileFormValidator._toggleButtonState(); // Restablece el botón de envío
   popupProfileForm.open();
+});
+
+addButton.addEventListener("click", () => {
+  feedFormValidator._toggleButtonState(); // Restablece el botón de envío
+  popupAddCardForm.open();
 });
 
 // Instancia de PopupWithForm para el formulario de nueva tarjeta
 const popupAddCardForm = new PopupWithForm("#form-feed", (formData) => {
   const cardData = { name: formData.title, link: formData["img-url"] };
-  const card = new Card(cardData, "#template-card", handleCardClick);
-  const cardElement = card.generateCard();
-  cardSection.addItem(cardElement);
-  popupAddCardForm.close();
+
+  // Validar que el enlace sea válido antes de agregar la tarjeta
+  if (cardData.link.match(/^https?:\/\/.+/)) {
+    const card = new Card(cardData, "#template-card", handleCardClick);
+    const cardElement = card.generateCard();
+    cardSection.addItem(cardElement);
+    popupAddCardForm.close();
+  } else {
+    alert("Por favor, ingrese un enlace válido para la imagen.");
+  }
 });
 popupAddCardForm.setEventListener();
 

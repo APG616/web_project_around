@@ -55,16 +55,14 @@ export default class FormValidator {
     const errorElement = this._formElement.querySelector(
       `.${inputElement.id}-error`
     );
-    inputElement.classList.remove(this._inputErrorClass);
-    errorElement.classList.remove(this._errorClass);
-    errorElement.textContent = "";
-
-    // Revisa si el botón de envío debe ser habilitado después de ocultar el error
-    this._toggleButtonState();
+    if (errorElement) {
+      inputElement.classList.remove(this._inputErrorClass);
+      errorElement.classList.remove(this._errorClass);
+      errorElement.textContent = "";
+    }
   }
 
   _toggleButtonState() {
-    if (!this._submitButton) return;
     const isFormValid = this._inputList.every((input) => input.validity.valid);
     if (isFormValid) {
       this._submitButton.classList.remove(this._inactiveButtonClass);
