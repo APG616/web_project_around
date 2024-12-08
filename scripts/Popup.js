@@ -1,4 +1,4 @@
-// Popup.js (modificado)
+// Popup.js (modificado 4 clases relacionadas)
 export class Popup {
   constructor(popupSelector) {
     this._popup = document.querySelector(popupSelector);
@@ -60,32 +60,70 @@ export class PopupWithForm extends Popup {
   constructor(popupSelector, handleFormSubmit) {
     super(popupSelector);
     this._handleFormSubmit = handleFormSubmit;
-    this._form = this._popup.querySelector(".popup__form");
-    this._inputList = Array.from(this._form.querySelectorAll(".popup__input"));
+    this._form = this._popup.querySelector("form");
+
+    if (!this._form) {
+      throw new Error(`Formulario no encontrado en el popup: ${popupSelector}`);
+    }
+
+    this._inputList = this._form.querySelectorAll(".popup__input");
+    this._submitButton = this._form.querySelector("button[type='submit']");
   }
 
   _getInputValues() {
-    const formValues = {};
+    const inputValues = {};
     this._inputList.forEach((input) => {
-      formValues[input.name] = input.value; // Recoge los valores usando 'name'
+      inputValues[input.name] = input.value;
     });
-    console.log("Datos del formulario:", formValues); // Agregar log para depuración
-    return formValues;
+    return inputValues;
   }
 
   setEventListener() {
-    super.setEventListener();
+    super.setEventListener(); // Llama al setEventListener de la clase base
     this._form.addEventListener("submit", (event) => {
-      event.preventDefault(); // Impide el comportamiento por defecto
-      console.log("Formulario enviado:", this._getInputValues()); // Agrega este log para verificar
-      this._handleFormSubmit(this._getInputValues());
+      event.preventDefault();
+      if (this._handleConfirm) {
+        this._handleConfirm(this._cardId);
+      }
+      this.close();
     });
   }
 
   close() {
     super.close();
-    setTimeout(() => {
-      this._form.reset(); // Ahora el formulario se limpia después de cerrarlo
-    }, 0);
+  }
+}
+
+export class PopupWithConfirmation extends Popup {
+  constructor(popupSelector) {
+    super(popupSelector);
+    this._form = this._popup.querySelector(".popup__form");
+    this._handleConfirm = null; // Inicializar la función de confirmación
+    this._cardId = null; // Inicializar el cardId
+  }
+
+  // Establece los listeners para el formulario de confirmación
+  setEventListener() {
+    super.setEventListener(); // Llama al setEventListener de la clase base
+    this._form.addEventListener("submit", (event) => {
+      event.preventDefault(); // Previene el comportamiento por defecto
+      if (this._handleConfirm) {
+        this._handleConfirm(this._cardId); // Ejecuta la confirmación de eliminación con el ID de la tarjeta
+      }
+      this.close(); // Cierra el popup después de la confirmación
+    });
+  }
+
+  // Abre el popup y configura el callback de confirmación y el ID de la tarjeta
+  open(handleConfirm, cardId) {
+    this._handleConfirm = handleConfirm; // Asigna la función de confirmación
+    this._cardId = cardId; // Asigna el ID de la tarjeta
+    super.open(); // Llama al método 'open' de la clase base
+  }
+
+  // Cierra el popup y resetea el cardId
+  close() {
+    super.close();
+    this._cardId = null; // Resetea el cardId al cerrarse
   }
 }

@@ -1,11 +1,19 @@
 // Función para abrir popups
 export function openPopup(popup) {
+  if (!popup || !popup.classList.contains("popup")) {
+    console.error("Error: El elemento proporcionado no es un popup válido.");
+    return;
+  }
   popup.classList.add("popup_open");
   document.addEventListener("keydown", closePopupOnEsc);
 }
 
 // Función para cerrar popups
 export function closePopup(popup) {
+  if (!popup || !popup.classList.contains("popup_open")) {
+    console.error("Error: El elemento proporcionado no es un popup abierto.");
+    return;
+  }
   popup.classList.remove("popup_open");
   document.removeEventListener("keydown", closePopupOnEsc);
 }

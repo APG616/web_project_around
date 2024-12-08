@@ -78,6 +78,10 @@
   margin-left: auto; /* Asegurar que se mantenga alineado a la derecha */
 }
 
+.content__like-count {
+  display: none;
+}
+
 .content__like img {
   width: 21px;
   height: 19px;

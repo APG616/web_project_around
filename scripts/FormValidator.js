@@ -6,7 +6,7 @@ export default class FormValidator {
     this._inactiveButtonClass = config.inactiveButtonClass;
     this._inputErrorClass = config.inputErrorClass;
     this._errorClass = config.errorClass;
-    this._formElement = formElement; // Usa formElement directamente
+    this._formElement = formElement;
     this._inputList = Array.from(
       formElement.querySelectorAll(this._inputSelector)
     );
@@ -14,25 +14,24 @@ export default class FormValidator {
   }
 
   enableValidation() {
-    this._toggleButtonState();
-    this._setEventListeners();
+    this._setEventListeners(); // Asegura que los listeners se configuren cuando se habilite la validación
+    this._toggleButtonState(); // Establece el estado del botón al iniciar
   }
 
   _setEventListeners() {
-    this._toggleButtonState();
     this._inputList.forEach((inputElement) => {
       inputElement.addEventListener("input", () => {
-        this._checkInputValidity(inputElement);
-        this._toggleButtonState();
+        this._checkInputValidity(inputElement); // Verifica si el input es válido
+        this._toggleButtonState(); // Actualiza el estado del botón en cada cambio
       });
     });
   }
 
   _checkInputValidity(inputElement) {
     if (!inputElement.validity.valid) {
-      this._showInputError(inputElement, inputElement.validationMessage);
+      this._showInputError(inputElement, inputElement.validationMessage); // Muestra error si es inválido
     } else {
-      this._hideInputError(inputElement);
+      this._hideInputError(inputElement); // Esconde error si es válido
     }
   }
 
@@ -56,9 +55,9 @@ export default class FormValidator {
       `.${inputElement.id}-error`
     );
     if (errorElement) {
-      inputElement.classList.remove(this._inputErrorClass);
-      errorElement.classList.remove(this._errorClass);
-      errorElement.textContent = "";
+      inputElement.classList.remove(this._inputErrorClass); // Elimina la clase de error del input
+      errorElement.classList.remove(this._errorClass); // Elimina la clase de error del mensaje
+      errorElement.textContent = ""; // Limpia el mensaje de error
     }
   }
 
