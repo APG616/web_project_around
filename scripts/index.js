@@ -10,91 +10,48 @@ import {
   PopupWithConfirmation,
 } from "./Popup.js";
 import Api from "./Api.js";
-import { API_URL, TOKEN } from "./constants.js";
 
-// Selección de elementos del DOM
-const profilePopupButton = document.querySelector(".profile__edit-button");
-const addButton = document.querySelector(".profile__add-button");
-const profileForm = document.querySelector("#register-profile");
-const feedForm = document.querySelector("#feed-profile");
-const nameInput = document.querySelector("#name");
-const jobInput = document.querySelector("#about-me");
-const elementsContainer = document.querySelector(".elements__container");
-const avatarContainer = document.querySelector(".profile__avatar-container");
-const avatarForm = document.querySelector("#update-avatar-form");
-const avatarPopup = document.querySelector("#avatar-update");
-const avatarInput = document.querySelector("#avatar-url");
-const avatarImage = document.querySelector(".profile__avatar");
-const isValidUrl = (url) => /^https?:\/\/.+/.test(url);
-export let USER_ID = "";
-
-// Configuración del popup para actualizar el avatar
-const popupAvatarUpdateForm = new PopupWithForm(
-  "#avatar-update",
-  (formData) => {
-    api
-      .updateAvatar(formData.avatar) // Asegúrate de que el nombre del campo coincida
-      .then((updatedUser) => {
-        avatarImage.src = updatedUser.avatar; // Actualiza el DOM con el nuevo avatar
-        popupAvatarUpdateForm.close();
-      })
-      .catch((err) => console.error("Error al actualizar el avatar:", err));
-  }
-);
-
-// Lógica para abrir el popup de avatar
-avatarContainer.addEventListener("click", () => {
-  avatarForm.reset();
-  avatarFormValidator.enableValidation();
-  popupAvatarUpdateForm.open();
-});
-
-// Instancia de la API
+// Configuración de la instancia de la API
 const api = new Api({
-  baseUrl: API_URL,
+  baseUrl: "https://around-api.es.tripleten-services.com/v1",
   headers: {
-    authorization: TOKEN, // Este es el token que se pasa a la clase Api
+    authorization: "9c1ddd42-c558-47c8-998b-47d8abba4611",
     "Content-Type": "application/json",
   },
 });
 
-document.addEventListener("click", closePopupOnOverlayClick);
-
-// Instancia de PopupWithImage para el popup de visualización de imágenes
-const popupWithImage = new PopupWithImage("#image-popup");
-popupWithImage.setEventListener();
-
-// Instancia de PopupWithConfirmation para la eliminación de tarjetas
-const popupWithConfirmation = new PopupWithConfirmation("#form-delete");
-popupWithConfirmation.setEventListener();
-
-// Crear la tarjeta
-
-// Función para manejar la eliminación de la tarjeta
-const handleDeleteCard = (id) => {
-  popupWithConfirmation.open(() => {
-    api
-      .deleteCard(id) // Debes usar el método adecuado de la API para eliminar la tarjeta
-      .then(() => {
-        // Aquí puedes eliminar la tarjeta del DOM
-        const cardElement = document.getElementById(id); // Suponiendo que las tarjetas tienen el id correcto
-        cardElement.remove();
-      })
-      .catch((err) => console.error("Error al eliminar tarjeta:", err));
-  });
+// Configuración de validación
+const validationConfig = {
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".form__update",
+  inactiveButtonClass: "form__send_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__input-error_active",
 };
 
+// Selección de elementos del DOM
+const profilePopupButton = document.querySelector(".profile__edit-button");
+const addButton = document.querySelector(".profile__add-button");
+const avatarContainer = document.querySelector(".profile__avatar-container");
+const avatarImage = document.querySelector(".profile__avatar");
+const nameInput = document.querySelector("#name");
+const jobInput = document.querySelector("#about-me");
+
+// Instancia para manejar la información del usuario
+const userInfo = new UserInfo({
+  nameSelector: "#profile-name",
+  jobSelector: "#profile-description",
+  avatarSelector: ".profile__avatar",
+});
+
+// Función para crear tarjetas
 const createCard = (data) => {
   const card = new Card(
-    data,
+    { ...data, userId: userInfo.getUserId() }, // Incluye el userId actual
     "#template-card",
-    (name, link) => {
-      popupWithImage.open(name, link); // Popup para abrir imágenes
-    },
-    API_URL,
-    USER_ID,
-    popupWithConfirmation,
-    TOKEN
+    (name, link) => popupWithImage.open({ name, link }),
+    api,
+    popupWithConfirmation
   );
   return card.generateCard();
 };
@@ -102,41 +59,29 @@ const createCard = (data) => {
 // Instancia de Section para manejar las tarjetas
 const cardSection = new Section(
   {
-    items: [],
     renderer: (cardData) => {
-      const card = createCard(cardData);
-      cardSection.addItem(card);
+      const cardElement = createCard(cardData);
+      if (cardElement) cardSection.addItem(cardElement);
     },
   },
   ".elements__container"
 );
 
-// Configuración de validación
-const validationConfig = {
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".form__send, .form__update",
-  inactiveButtonClass: "form__send_disabled",
-  inputErrorClass: "popup__input_type_error",
-  errorClass: "popup__input-error_active",
-};
+// Carga las tarjetas iniciales y las renderiza
+cardSection.loadAndRenderItems(api.getInitialCards.bind(api));
 
-// Instancia de FormValidator para los formularios
-const profileFormValidator = new FormValidator(validationConfig, profileForm);
-const feedFormValidator = new FormValidator(validationConfig, feedForm);
-const avatarFormValidator = new FormValidator(validationConfig, avatarForm);
-profileFormValidator.enableValidation();
-feedFormValidator.enableValidation();
-avatarFormValidator.enableValidation();
-// Instancia de UserInfo para gestionar la información del usuario
-const userInfo = new UserInfo({
-  nameSelector: "#profile-name",
-  jobSelector: "#profile-description",
-});
+// Instancia de PopupWithImage para mostrar imágenes
+const popupWithImage = new PopupWithImage("#image-popup");
+popupWithImage.setEventListener();
 
-// Instancia de PopupWithForm para el formulario de perfil
+// Instancia de PopupWithConfirmation para confirmar acciones
+const popupWithConfirmation = new PopupWithConfirmation("#form-delete");
+popupWithConfirmation.setEventListener();
+
+// Instancia de PopupWithForm para actualizar el perfil
 const popupProfileForm = new PopupWithForm("#form-profile", (formData) => {
   api
-    .setUserInfo({ name: formData.name, about: formData.about })
+    .updateUserInfo({ name: formData.name, about: formData["about-me"] })
     .then((userData) => {
       userInfo.setUserInfo({
         name: userData.name,
@@ -146,28 +91,29 @@ const popupProfileForm = new PopupWithForm("#form-profile", (formData) => {
     })
     .catch((err) => console.error("Error al actualizar el perfil:", err));
 });
-
 popupProfileForm.setEventListener();
 
-// Abrir el popup de perfil con datos existentes
-// Lógica para abrir el popup de perfil
-profilePopupButton.addEventListener("click", () => {
-  const userData = userInfo.getUserInfo();
-  nameInput.value = userData.name;
-  jobInput.value = userData.job;
-  feedFormValidator.enableValidation();
-  popupProfileForm.open();
-});
+// Instancia de PopupWithForm para actualizar el avatar
+const popupAvatarUpdateForm = new PopupWithForm(
+  "#avatar-update",
+  (formData) => {
+    api
+      .updateProfilePicture(formData.avatar)
+      .then((userData) => {
+        userInfo.setUserInfo({
+          avatar: userData.avatar,
+        });
+        popupAvatarUpdateForm.close();
+      })
+      .catch((err) => console.error("Error al actualizar el avatar:", err));
+  }
+);
+popupAvatarUpdateForm.setEventListener();
 
-// Abre el popup de "Nuevo lugar" (Agregar tarjeta)
-
-// Popup para agregar tarjetas
+// Instancia de PopupWithForm para agregar tarjetas
 const popupAddCardForm = new PopupWithForm("#form-feed", (formData) => {
   api
-    .addCard({
-      name: formData.title,
-      link: formData["img-url"],
-    })
+    .addCard({ name: formData.title, link: formData["img-url"] })
     .then((cardData) => {
       const cardElement = createCard(cardData);
       cardSection.addItem(cardElement);
@@ -177,52 +123,53 @@ const popupAddCardForm = new PopupWithForm("#form-feed", (formData) => {
 });
 popupAddCardForm.setEventListener();
 
+// Validadores de formularios
+const profileFormValidator = new FormValidator(
+  validationConfig,
+  document.querySelector("#register-profile")
+);
+const feedFormValidator = new FormValidator(
+  validationConfig,
+  document.querySelector("#feed-profile")
+);
+const avatarFormValidator = new FormValidator(
+  validationConfig,
+  document.querySelector("#update-avatar-form")
+);
+
+profileFormValidator.enableValidation();
+feedFormValidator.enableValidation();
+avatarFormValidator.enableValidation();
+
+// Manejo de eventos para abrir popups
+profilePopupButton.addEventListener("click", () => {
+  const userData = userInfo.getUserInfo();
+  nameInput.value = userData.name;
+  jobInput.value = userData.job;
+  popupProfileForm.open();
+});
+
 addButton.addEventListener("click", () => {
-  feedForm.reset();
-  feedFormValidator.enableValidation();
+  feedFormValidator.resetValidation();
   popupAddCardForm.open();
 });
 
-// Función de cierre del popup al hacer clic en el overlay
-function closePopupOnOverlayClick(event) {
-  if (event.target.classList.contains("popup_opened")) {
-    event.target.classList.remove("popup_opened");
-  }
-}
-
-// Delegación de eventos para manejar el clic en el overlay y la tecla Esc
-const popups = document.querySelectorAll(".popup");
-popups.forEach((popup) => {
-  popup.addEventListener("click", (event) => {
-    if (event.target.classList.contains("popup")) {
-      popup.classList.remove("popup_opened");
-    }
-  });
+avatarContainer.addEventListener("click", () => {
+  avatarFormValidator.resetValidation();
+  popupAvatarUpdateForm.open();
 });
 
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    const popupOpened = document.querySelector(".popup_opened");
-    popupOpened?.classList.remove("popup_opened");
-  }
-});
+// Carga las tarjetas iniciales y las renderiza
+Promise.all([api.getInitialCards(), api.getUserInfo()])
+  .then(([cardsData, userData]) => {
+    // Renders las tarjetas
+    cardsData.forEach((cardData) => cardSection.renderer(cardData));
 
-// Obtener datos iniciales del usuario y tarjetas
-Promise.all([api.getUserInfo(), api.getInitialCards()])
-  .then(([userData, initialCards]) => {
-    USER_ID = userData._id; // Guardar el ID del usuario
-    initialCards.forEach((cardData) => {
-      const cardElement = createCard(cardData);
-      cardSection.addItem(cardElement); // Añadir las tarjetas al contenedor
-    });
-
-    // Actualizar la información del usuario y el avatar
+    // Actualiza la información del usuario
     userInfo.setUserInfo({
       name: userData.name,
       job: userData.about,
+      avatar: userData.avatar,
     });
-    avatarImage.src = userData.avatar;
   })
-  .catch((err) => {
-    console.error("Error al cargar la información:", err);
-  });
+  .catch((err) => console.error("Error al cargar los datos:", err));

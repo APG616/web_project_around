@@ -5,10 +5,8 @@ export class Popup {
     this._handleEscClose = this._handleEscClose.bind(this);
   }
 
-  // Método `open` de la clase Popup en Popup.js
   open() {
     this._popup.classList.add("popup_open");
-    console.log("Popup abierto: ", this._popup); // Verificar en consola
     document.addEventListener("keydown", this._handleEscClose);
   }
 
@@ -43,16 +41,14 @@ export class PopupWithImage extends Popup {
   }
 
   open({ link, name }) {
-    if (this._imageElement && this._captionElement) {
-      this._imageElement.src = link;
-      this._imageElement.alt = name;
-      this._captionElement.textContent = name;
-      super.open();
-    } else {
-      console.error(
-        "No se encontró el elemento de imagen o subtítulo en el popup."
-      );
+    if (!link || !name) {
+      console.error("Datos incompletos para abrir el popup:", { link, name });
+      return;
     }
+    this._imageElement.src = link;
+    this._imageElement.alt = name;
+    this._captionElement.textContent = name;
+    super.open();
   }
 }
 
@@ -79,7 +75,29 @@ export class PopupWithForm extends Popup {
   }
 
   setEventListener() {
-    super.setEventListener(); // Llama al setEventListener de la clase base
+    super.setEventListener();
+    this._form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      this._handleFormSubmit(this._getInputValues());
+    });
+  }
+
+  close() {
+    super.close();
+    this._form.reset();
+  }
+}
+
+export class PopupWithConfirmation extends Popup {
+  constructor(popupSelector) {
+    super(popupSelector);
+    this._form = this._popup.querySelector(".popup__form");
+    this._handleConfirm = null;
+    this._cardId = null;
+  }
+
+  setEventListener() {
+    super.setEventListener();
     this._form.addEventListener("submit", (event) => {
       event.preventDefault();
       if (this._handleConfirm) {
@@ -89,41 +107,14 @@ export class PopupWithForm extends Popup {
     });
   }
 
-  close() {
-    super.close();
-  }
-}
-
-export class PopupWithConfirmation extends Popup {
-  constructor(popupSelector) {
-    super(popupSelector);
-    this._form = this._popup.querySelector(".popup__form");
-    this._handleConfirm = null; // Inicializar la función de confirmación
-    this._cardId = null; // Inicializar el cardId
-  }
-
-  // Establece los listeners para el formulario de confirmación
-  setEventListener() {
-    super.setEventListener(); // Llama al setEventListener de la clase base
-    this._form.addEventListener("submit", (event) => {
-      event.preventDefault(); // Previene el comportamiento por defecto
-      if (this._handleConfirm) {
-        this._handleConfirm(this._cardId); // Ejecuta la confirmación de eliminación con el ID de la tarjeta
-      }
-      this.close(); // Cierra el popup después de la confirmación
-    });
-  }
-
-  // Abre el popup y configura el callback de confirmación y el ID de la tarjeta
   open(handleConfirm, cardId) {
-    this._handleConfirm = handleConfirm; // Asigna la función de confirmación
-    this._cardId = cardId; // Asigna el ID de la tarjeta
-    super.open(); // Llama al método 'open' de la clase base
+    this._handleConfirm = handleConfirm;
+    this._cardId = cardId;
+    super.open();
   }
 
-  // Cierra el popup y resetea el cardId
   close() {
     super.close();
-    this._cardId = null; // Resetea el cardId al cerrarse
+    this._cardId = null;
   }
 }

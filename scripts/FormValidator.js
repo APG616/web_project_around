@@ -1,3 +1,5 @@
+//FormValidator.js
+
 export default class FormValidator {
   constructor(config, formElement) {
     this._formSelector = config.formSelector;

@@ -1,114 +1,109 @@
 // card.js
-import { API_URL, TOKEN } from "./constants.js";
-import { USER_ID } from "./index.js";
 export default class Card {
   constructor(
     data,
     templateSelector,
     handleCardClick,
-    apiUrl,
-    userId,
-    popupWithConfirmation,
-    token
+    api,
+    popupWithConfirmation
   ) {
     this._name = data.name;
     this._link = data.link;
     this._id = data._id;
     this._likes = data.likes;
-    this._isLiked = data.isLiked;
+    this._ownerId = data.owner._id; // ID del creador de la tarjeta
+    this._userId = data.userId; // ID del usuario actual
     this._templateSelector = templateSelector;
     this._handleCardClick = handleCardClick;
-    this.apiUrl = apiUrl || API_URL;
-    this._userId = userId;
+    this._api = api;
     this._popupWithConfirmation = popupWithConfirmation;
-    this.token = token || TOKEN;
-
-    console.log("Card creada con:", {
-      apiUrl: this.apiUrl,
-      token: this.token,
-    });
   }
 
+  // Método para obtener la plantilla de la tarjeta
   _getTemplate() {
-    const cardTemplate = document
+    const cardElement = document
       .querySelector(this._templateSelector)
       .content.querySelector(".element__card")
       .cloneNode(true);
-    return cardTemplate;
+    return cardElement;
   }
 
-  _setEventListeners() {
-    this._likeButton.addEventListener("click", () => this._toggleLike());
-    this._trashButton.addEventListener("click", () => this._openDeletePopup());
-    this._imageElement.addEventListener("click", () => {
-      this._handleCardClick(this._name, this._link);
+  // Método para manejar el botón "like"
+  _handleLikeButton() {
+    const isLiked = this._likeButton.classList.contains("content__like_active");
+
+    this._api
+      .toggleLike(this._id, isLiked)
+      .then((updatedCard) => {
+        this._likes = updatedCard.likes; // Actualiza los likes con los datos del servidor
+        this._renderLikes(); // Renderiza el contador de likes
+      })
+      .catch((err) => console.error("Error al manejar el like:", err));
+  }
+
+  // Método para manejar la eliminación
+  _handleDeleteButton() {
+    this._popupWithConfirmation.open(() => {
+      this._api
+        .deleteCard(this._id)
+        .then(() => {
+          this._element.remove(); // Elimina la tarjeta del DOM
+          this._element = null;
+          this._popupWithConfirmation.close(); // Cierra el popup
+        })
+        .catch((err) => console.error("Error al eliminar la tarjeta:", err));
     });
   }
 
-  _toggleLike() {
-    if (!this.apiUrl || !this._id) {
-      console.error("Error: apiUrl o id de la tarjeta no definidos.");
-      return;
+  // Método para configurar eventos
+  _setEventListeners() {
+    this._likeButton.addEventListener("click", () => this._handleLikeButton());
+    if (this._deleteButton) {
+      this._deleteButton.addEventListener("click", () =>
+        this._handleDeleteButton()
+      );
     }
-
-    // Verificar si el usuario ya ha dado 'like' en esta tarjeta
-    const method = this._isLiked ? "DELETE" : "PUT";
-    fetch(`${this.apiUrl}/cards/${this._id}/likes`, {
-      method,
-      headers: { authorization: this.token },
-    })
-      .then((res) => (res.ok ? res.json() : Promise.reject(res.statusText)))
-      .then((updatedCard) => {
-        console.log(updatedCard); // Verifica el formato de la respuesta
-        if (updatedCard && Array.isArray(updatedCard.likes)) {
-          const isLiked = updatedCard.likes.some(
-            (user) => user._id === this._userId
-          );
-          this._likeCountElement.textContent = updatedCard.likes.length;
-          this._isLiked = isLiked;
-          this._likeButton.classList.toggle(
-            "content__like_active",
-            this._isLiked
-          );
-        } else {
-          console.error(
-            "La propiedad 'likes' no es un array o no está definida"
-          );
-        }
-      })
-      .catch((err) => console.error("Error al alternar 'me gusta':", err));
+    this._imageElement.addEventListener("click", () =>
+      this._handleCardClick({ name: this._name, link: this._link })
+    );
   }
 
-  _openDeletePopup() {
-    const handleConfirm = () => this._deleteCard();
-    this._popupWithConfirmation.open(handleConfirm, this._id);
+  // Método para renderizar el contador de likes
+  _renderLikes() {
+    this._likeCount.textContent = this._likes.length;
+    if (this._likes.some((user) => user._id === this._userId)) {
+      this._likeButton.classList.add("content__like_active");
+    } else {
+      this._likeButton.classList.remove("content__like_active");
+    }
   }
 
-  _deleteCard() {
-    fetch(`${this.apiUrl}/cards/${this._id}`, {
-      method: "DELETE",
-      headers: { authorization: this.token },
-    })
-      .then((res) => (res.ok ? res.json() : Promise.reject(res.statusText)))
-      .then(() => {
-        this._element.remove(); // Elimina la tarjeta del DOM
-        this._element = null; // Limpia la referencia al elemento
-      })
-      .catch((err) => console.error("Error al eliminar tarjeta:", err));
+  // Método público para eliminar la tarjeta (para integraciones externas)
+  deleteCard() {
+    this._element.remove();
+    this._element = null;
   }
 
+  // Método público para generar la tarjeta
   generateCard() {
     this._element = this._getTemplate();
-    this._imageElement = this._element.querySelector(".element__card-image");
-    this._titleElement = this._element.querySelector(".content__text");
     this._likeButton = this._element.querySelector(".content__like");
-    this._trashButton = this._element.querySelector(".element__trash");
+    this._deleteButton = this._element.querySelector(".element__trash");
+    this._imageElement = this._element.querySelector(".element__card-image");
+    this._likeCount = this._element.querySelector(".content__like-count");
 
-    this._titleElement.textContent = this._name;
+    this._element.querySelector(".content__text").textContent = this._name;
     this._imageElement.src = this._link;
     this._imageElement.alt = this._name;
 
-    this._setEventListeners();
+    // Oculta el botón de eliminar si el usuario no es el propietario
+    if (this._ownerId !== this._userId) {
+      this._deleteButton.remove();
+      this._deleteButton = null;
+    }
+
+    this._renderLikes(); // Renderiza los likes iniciales
+    this._setEventListeners(); // Configura los eventos
 
     return this._element;
   }
