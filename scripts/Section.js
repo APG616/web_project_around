@@ -1,6 +1,7 @@
+//Section.js
 export default class Section {
-  constructor({ renderer }, containerSelector) {
-    this._renderer = renderer; // Función para renderizar cada elemento
+  constructor({ renderItems }, containerSelector) {
+    this._renderItems = renderItems; // Función para renderizar cada elemento
     this._container = document.querySelector(containerSelector); // Contenedor en el DOM
     this._items = []; // Array inicial para almacenar los elementos
   }
@@ -15,7 +16,7 @@ export default class Section {
   renderItems() {
     this._container.innerHTML = ""; // Limpia el contenedor antes de renderizar
     this._items.forEach((item) => {
-      this._renderer(item); // Llama al renderer para cada elemento
+      this._renderItems(item); // Llama al renderer para cada elemento
     });
   }
 

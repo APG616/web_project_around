@@ -47,7 +47,7 @@ const userInfo = new UserInfo({
 // Función para crear tarjetas
 const createCard = (data) => {
   const card = new Card(
-    { ...data, userId: userInfo.getUserId() }, // Incluye el userId actual
+    { ...data, userId: userInfo.getUserInfo() }, // Incluye el userId actual
     "#template-card",
     (name, link) => popupWithImage.open({ name, link }),
     api,
@@ -59,7 +59,7 @@ const createCard = (data) => {
 // Instancia de Section para manejar las tarjetas
 const cardSection = new Section(
   {
-    renderer: (cardData) => {
+    renderItems: (cardData) => {
       const cardElement = createCard(cardData);
       if (cardElement) cardSection.addItem(cardElement);
     },

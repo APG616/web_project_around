@@ -7,12 +7,12 @@ export default class Card {
     api,
     popupWithConfirmation
   ) {
-    this._name = data.name;
-    this._link = data.link;
+    this._name = data.name || [];
+    this._link = data.link || [];
     this._id = data._id;
-    this._likes = data.likes;
+    this._likes = data.likes || [];
     this._ownerId = data.owner._id; // ID del creador de la tarjeta
-    this._userId = data.userId || []; // ID del usuario actual
+    this._userId = data.userId || ""; // ID del usuario actual
     this._templateSelector = templateSelector;
     this._handleCardClick = handleCardClick;
     this._api = api;
@@ -35,7 +35,7 @@ export default class Card {
     this._api
       .toggleLike(this._id, isLiked)
       .then((updatedCard) => {
-        this._likes = updatedCard.likes; // Actualiza los likes con los datos del servidor
+        this._likes = updatedCard.likes || []; // Actualiza los likes con los datos del servidor
         this._renderLikes(); // Renderiza el contador de likes
       })
       .catch((err) => console.error("Error al manejar el like:", err));
@@ -70,7 +70,6 @@ export default class Card {
 
   // Método para renderizar el contador de likes
   _renderLikes() {
-    this._likeCount = textContentthis._likes ? this._likes.length : 0;
     if (this._likes.some((user) => user._id === this._userId)) {
       this._likeButton.classList.add("content__like_active");
     } else {
@@ -90,17 +89,10 @@ export default class Card {
     this._likeButton = this._element.querySelector(".content__like");
     this._deleteButton = this._element.querySelector(".element__trash");
     this._imageElement = this._element.querySelector(".element__card-image");
-    this._likeCount = this._element.querySelector(".content__like-count");
 
     this._element.querySelector(".content__text").textContent = this._name;
     this._imageElement.src = this._link;
     this._imageElement.alt = this._name;
-
-    // Oculta el botón de eliminar si el usuario no es el propietario
-    if (this._ownerId !== this._userId) {
-      this._deleteButton.remove();
-      this._deleteButton = null;
-    }
 
     this._renderLikes(); // Renderiza los likes iniciales
     this._setEventListeners(); // Configura los eventos

@@ -32,6 +32,8 @@
   position: absolute;
   right: 5px;
   top: 5px;
+  visibility: visible;
+  display: block;
 }
 
 .element__trash:hover {
