@@ -150,12 +150,12 @@ profilePopupButton.addEventListener("click", () => {
 });
 
 addButton.addEventListener("click", () => {
-  feedFormValidator.resetValidation();
+  feedFormValidator.enableValidation();
   popupAddCardForm.open();
 });
 
 avatarContainer.addEventListener("click", () => {
-  avatarFormValidator.resetValidation();
+  avatarFormValidator.enableValidation();
   popupAvatarUpdateForm.open();
 });
 
@@ -163,7 +163,7 @@ avatarContainer.addEventListener("click", () => {
 Promise.all([api.getInitialCards(), api.getUserInfo()])
   .then(([cardsData, userData]) => {
     // Renders las tarjetas
-    cardsData.forEach((cardData) => cardSection.renderer(cardData));
+    cardsData.forEach((cardData) => cardSection.renderItems(cardData));
 
     // Actualiza la información del usuario
     userInfo.setUserInfo({

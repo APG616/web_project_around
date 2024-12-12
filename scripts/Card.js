@@ -12,7 +12,7 @@ export default class Card {
     this._id = data._id;
     this._likes = data.likes;
     this._ownerId = data.owner._id; // ID del creador de la tarjeta
-    this._userId = data.userId; // ID del usuario actual
+    this._userId = data.userId || []; // ID del usuario actual
     this._templateSelector = templateSelector;
     this._handleCardClick = handleCardClick;
     this._api = api;
@@ -70,7 +70,7 @@ export default class Card {
 
   // Método para renderizar el contador de likes
   _renderLikes() {
-    this._likeCount.textContent = this._likes.length;
+    this._likeCount = textContentthis._likes ? this._likes.length : 0;
     if (this._likes.some((user) => user._id === this._userId)) {
       this._likeButton.classList.add("content__like_active");
     } else {

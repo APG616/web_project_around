@@ -15,7 +15,7 @@ export default class Api {
   // Obtener información del usuario
   getUserInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
-      headers: this.headers,
+      headers: this._headers,
     }).then((res) => {
       if (res.ok) {
         return res.json();
@@ -28,7 +28,7 @@ export default class Api {
   // Obtener tarjetas iniciales
   getInitialCards() {
     return fetch(`${this._baseUrl}/cards`, {
-      headers: this.headers,
+      headers: this._headers,
     }).then((res) => {
       if (res.ok) {
         return res.json();
